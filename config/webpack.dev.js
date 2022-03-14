@@ -1,11 +1,9 @@
 const path = require('path')
-const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = {
   entry: [
-    'webpack-dev-server/client?http://localhost:8080',
-    'webpack/hot/only-dev-server',
     path.resolve(__dirname, '../src/index.jsx')
   ],
   output: {
@@ -25,7 +23,7 @@ module.exports = {
       {
         test: /\.(jsx?)$/,
         exclude: /node_modules/,
-        use: ['react-hot-loader/webpack', 'babel-loader', 'eslint-loader']
+        use: ['react-hot-loader/webpack', 'babel-loader']
       }, {
         test: /\.s[ac]ss$/,
         use: [
@@ -38,7 +36,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx']
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../src/template.html'),
       filename: 'index.html'
@@ -46,7 +46,6 @@ module.exports = {
   ],
   devServer: {
     historyApiFallback: true,
-    hot: true,
     client: {
       overlay: false
     }
