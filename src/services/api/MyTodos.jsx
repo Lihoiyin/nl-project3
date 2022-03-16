@@ -13,7 +13,7 @@ export const apiMyTodos = createApi({
         url: '',
         method: 'GET'
       }),
-      providesTags: (result) => (result ? [...result.map(({ id }) => ({ type: 'MyTodo', id })), 'MyTodo'] : ['MyTodo'])
+      providesTags: (result) => (result ? [...result.todos.map(({ id }) => ({ type: 'MyTodo', id })), 'MyTodo'] : ['MyTodo'])
     }),
     createMyTodo: builder.mutation({
       query: (data) => ({
