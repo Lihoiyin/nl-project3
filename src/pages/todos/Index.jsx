@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import moment from 'moment'
 import Skeleton from 'react-loading-skeleton'
+import { useNavigate } from 'react-router-dom'
 
 import { useTodos } from '@/contexts/Todos'
-import { useNavigate } from 'react-router-dom'
 
 function PagesTodosIndex() {
   const navigate = useNavigate()
