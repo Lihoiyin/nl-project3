@@ -1,11 +1,19 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { useMyTodos } from '@/contexts/MyTodos'
+import { useCreateMyTodoMutation } from '@/services/api/MyTodos'
 
 import FormsTodosChange from '@/forms/todos/Change'
 
 function PagesMyTodosNew() {
-  const { createMyTodo } = useMyTodos()
+  const navigation = useNavigate()
+  const [createMyTodo] = useCreateMyTodoMutation()
+
+  const customCreateMyTodo = async (data) => {
+    await createMyTodo(data).then((resp) => {
+      navigation(`/todos/${resp.data.todo.id}`)
+    })
+  }
 
   return (
     <div id="pages-my-todos-new" className="container">
@@ -14,7 +22,7 @@ function PagesMyTodosNew() {
           <h1 className="text-center">Create A New Todo</h1>
 
           <FormsTodosChange
-            onSubmit={createMyTodo}
+            onSubmit={customCreateMyTodo}
           />
         </div>
       </div>
