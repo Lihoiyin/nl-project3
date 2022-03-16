@@ -7,7 +7,7 @@ import { useGetMyTodosQuery } from '@/services/api/MyTodos'
 
 function PagesMyTodosIndex() {
   const navigate = useNavigate()
-  const { data: myTodos, loading, error } = useGetMyTodosQuery()
+  const { data: { todos: myTodos } = {}, isLoading, error } = useGetMyTodosQuery()
 
   if (error) return <h1 className="text-center">{error.data.message}</h1>
 
@@ -25,7 +25,7 @@ function PagesMyTodosIndex() {
           </thead>
           <tbody>
             {
-              loading ? (
+              isLoading ? (
                 Array(10).fill(null).map((temp, i) => (
                   <tr key={i}>
                     <td><Skeleton /></td>
@@ -34,7 +34,7 @@ function PagesMyTodosIndex() {
                   </tr>
                 ))
               ) : (
-                myTodos?.todos?.map((myTodo) => (
+                myTodos?.map((myTodo) => (
                   <tr key={myTodo.id} onClick={() => navigate(`/my/todos/${myTodo.id}`)}>
                     <td>{myTodo.id}</td>
                     <td>{myTodo.title}</td>
