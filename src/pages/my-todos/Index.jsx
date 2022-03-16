@@ -34,7 +34,7 @@ function PagesMyTodosIndex() {
                   </tr>
                 ))
               ) : (
-                myTodos?.map((myTodo) => (
+                myTodos?.todos?.map((myTodo) => (
                   <tr key={myTodo.id} onClick={() => navigate(`/my/todos/${myTodo.id}`)}>
                     <td>{myTodo.id}</td>
                     <td>{myTodo.title}</td>
