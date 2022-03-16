@@ -1,20 +1,22 @@
-import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import React from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
-import { useMyTodos } from '@/contexts/MyTodos'
+import { useGetMyTodoQuery, useUpdateMyTodoMutation } from '@/services/api/MyTodos'
 
 import FormsTodosChange from '@/forms/todos/Change'
 
 function PagesMyTodosEdit() {
+  const navigate = useNavigate()
   const { id } = useParams()
-  const { show: { data: myTodo, loading }, getMyTodo, updateMyTodo } = useMyTodos()
+  const [updateMyTodo] = useUpdateMyTodoMutation()
+  const { data: { todo: myTodo } = {}, isLoading, error } = useGetMyTodoQuery(id)
 
-  useEffect(() => {
-    getMyTodo(id)
-  }, [])
+  if (error) return <h1 className="text-center">Todo {id} Not Found</h1>
 
-  if (!loading && !myTodo) return <h1 className="text-center">Todo {id} Not Found</h1>
+  const customUpdateMyTodo = (data) => updateMyTodo(data).then((resp) => {
+    if (resp.data) navigate(`/my/todos/${resp.data.todo.id}`)
+  })
 
   return (
     <div id="pages-my-todos-edit" className="container">
@@ -23,11 +25,11 @@ function PagesMyTodosEdit() {
           <h1 className="text-center">{ myTodo?.id ? `Edit Todo ${myTodo.id}` : <Skeleton className="w-50" />}</h1>
 
           {
-            loading ? (
+            isLoading ? (
               <Skeleton count={5} height={40} />
             ) : (
               <FormsTodosChange
-                onSubmit={updateMyTodo}
+                onSubmit={customUpdateMyTodo}
                 initialValues={myTodo}
               />
             )

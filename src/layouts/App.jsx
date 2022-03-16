@@ -1,23 +1,19 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
-import { useAuth } from '@/contexts/Auth'
+import { useGetMyProfileQuery } from '@/services/api/Auth'
 
 import LayoutsNavbar from '@/layouts/Navbar'
 import Loading from '@/components/Loading'
 
 function App() {
-  const { show: { loading }, getMyProfile } = useAuth()
-
-  useEffect(() => {
-    getMyProfile()
-  }, [])
+  const { isLoading } = useGetMyProfileQuery()
 
   return (
     <>
       <LayoutsNavbar />
-      { loading ? <Loading /> : <Outlet />}
+      { isLoading ? <Loading /> : <Outlet />}
       <ToastContainer
         position="bottom-left"
         autoClose={5000}

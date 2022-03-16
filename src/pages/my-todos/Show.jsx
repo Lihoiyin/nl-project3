@@ -1,26 +1,28 @@
-import React, { useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import React from 'react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import Skeleton from 'react-loading-skeleton'
 
-import { useMyTodos } from '@/contexts/MyTodos'
+import { useDeleteMyTodoMutation, useGetMyTodoQuery } from '@/services/api/MyTodos'
 
 function PagesMyTodosShow() {
+  const navigate = useNavigate()
   const { id } = useParams()
-  const { show: { data: myTodo, loading }, getMyTodo, deleteMyTodo } = useMyTodos()
+  const [deleteMyTodo] = useDeleteMyTodoMutation()
+  const { data: { todo: myTodo } = {}, isLoading, error } = useGetMyTodoQuery(id)
 
-  useEffect(() => {
-    getMyTodo(id)
-  }, [])
+  if (error) return <h1 className="text-center">Todo {id} Not Found</h1>
 
-  if (!loading && !myTodo) return <h1 className="text-center">Todo {id} Not Found</h1>
+  const customDeleteMyTodo = (data) => deleteMyTodo(data).then(() => {
+    navigate('/my/todos')
+  })
 
   return (
     <div id="pages-my-todos-show" className="container">
       <div className="text-center">
         <div className="btn-group">
           {
-            loading ? (
+            isLoading ? (
               <Skeleton width={150} height={40} />
             ) : (
               <>
@@ -30,7 +32,7 @@ function PagesMyTodosShow() {
                   type="button"
                   onClick={() => {
                     // eslint-disable-next-line
-                    window.confirm('Are you sure you want to delete this todo?') && deleteMyTodo(myTodo)
+                    window.confirm('Are you sure you want to delete this todo?') && customDeleteMyTodo(myTodo)
                   }}
                 >Delete</button>
               </>
@@ -44,12 +46,12 @@ function PagesMyTodosShow() {
       </div>
 
       {
-        (myTodo?.TodoItems?.length > 0 || loading) && (
+        (myTodo?.TodoItems?.length > 0 || isLoading) && (
           <div className="row">
             <div className="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
               <ul className="list-group text-center">
                 {
-                  loading ? (
+                  isLoading ? (
                     Array(5).fill(null).map((temp, i) => (
                       <li key={i} className="list-group-item">
                         <Skeleton />

@@ -1,19 +1,15 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import Skeleton from 'react-loading-skeleton'
 
-import { useTodos } from '@/contexts/Todos'
+import { useGetTodoQuery } from '@/services/api/Todos'
 
 function PagesTodosShow() {
   const { id } = useParams()
-  const { show: { data: todo, loading }, getTodo } = useTodos()
+  const { data: { todo } = {}, isLoading, error } = useGetTodoQuery(id)
 
-  useEffect(() => {
-    getTodo(id)
-  }, [])
-
-  if (!loading && !todo) return <h1 className="text-center">Todo {id} Not Found</h1>
+  if (error) return <h1 className="text-center">Todo {id} Not Found</h1>
 
   return (
     <div id="pages-todos-show" className="container">
@@ -24,12 +20,12 @@ function PagesTodosShow() {
       </div>
 
       {
-        (todo?.TodoItems?.length > 0 || loading) && (
+        (todo?.TodoItems?.length > 0 || isLoading) && (
           <div className="row">
             <div className="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
               <ul className="list-group text-center">
                 {
-                  loading ? (
+                  isLoading ? (
                     Array(5).fill(null).map((temp, i) => (
                       <li key={i} className="list-group-item">
                         <Skeleton />

@@ -15,14 +15,39 @@ export const apiMyTodos = createApi({
         method: 'GET'
       })
     }),
+    getMyTodo: builder.query({
+      query: (id) => ({
+        url: `/${id}`,
+        method: 'GET'
+      })
+    }),
     createMyTodo: builder.mutation({
       query: (data) => ({
         url: '',
         method: 'POST',
         data
       })
+    }),
+    updateMyTodo: builder.mutation({
+      query: (data) => ({
+        url: `/${data.id}`,
+        method: 'PUT',
+        data
+      })
+    }),
+    deleteMyTodo: builder.mutation({
+      query: (data) => ({
+        url: `/${data.id}`,
+        method: 'DELETE'
+      })
     })
   })
 })
 
-export const { useGetMyTodosQuery, useCreateMyTodoMutation } = apiMyTodos
+export const {
+  useGetMyTodosQuery,
+  useGetMyTodoQuery,
+  useCreateMyTodoMutation,
+  useUpdateMyTodoMutation,
+  useDeleteMyTodoMutation
+} = apiMyTodos

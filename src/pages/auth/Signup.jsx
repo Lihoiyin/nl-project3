@@ -1,11 +1,17 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { useAuth } from '@/contexts/Auth'
+import { useSignupMutation } from '@/services/api/Auth'
 
 import FormsAuthSignup from '@/forms/auth/Signup'
 
 function PagesAuthSignup() {
-  const { signup } = useAuth()
+  const navigate = useNavigate()
+  const [login] = useSignupMutation()
+
+  const customSignup = (data) => login(data).then((resp) => {
+    if (resp.data) navigate('/my/todos')
+  })
 
   return (
     <div id="pages-auth-signup" className="container">
@@ -14,7 +20,7 @@ function PagesAuthSignup() {
           <h1 className="text-center">Signup</h1>
 
           <FormsAuthSignup
-            onSubmit={signup}
+            onSubmit={customSignup}
           />
         </div>
       </div>

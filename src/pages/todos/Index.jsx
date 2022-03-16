@@ -1,17 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import moment from 'moment'
 import Skeleton from 'react-loading-skeleton'
 import { useNavigate } from 'react-router-dom'
 
-import { useTodos } from '@/contexts/Todos'
+import { useGetTodosQuery } from '@/services/api/Todos'
 
 function PagesTodosIndex() {
   const navigate = useNavigate()
-  const { index: { data: todos, loading }, getTodos } = useTodos()
-
-  useEffect(() => {
-    getTodos()
-  }, [])
+  const { data: { todos } = {}, isLoading } = useGetTodosQuery()
 
   return (
     <div id="pages-todos-index" className="container">
@@ -27,7 +23,7 @@ function PagesTodosIndex() {
           </thead>
           <tbody>
             {
-              loading ? (
+              isLoading ? (
                 Array(10).fill(null).map((temp, i) => (
                   <tr key={i}>
                     <td><Skeleton /></td>
@@ -36,7 +32,7 @@ function PagesTodosIndex() {
                   </tr>
                 ))
               ) : (
-                todos.map((todo) => (
+                todos?.map((todo) => (
                   <tr key={todo.id} onClick={() => navigate(`/todos/${todo.id}`)}>
                     <td>{todo.id}</td>
                     <td>{todo.title}</td>

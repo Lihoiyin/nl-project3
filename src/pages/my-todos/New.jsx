@@ -6,12 +6,12 @@ import { useCreateMyTodoMutation } from '@/services/api/MyTodos'
 import FormsTodosChange from '@/forms/todos/Change'
 
 function PagesMyTodosNew() {
-  const navigation = useNavigate()
+  const navigate = useNavigate()
   const [createMyTodo] = useCreateMyTodoMutation()
 
   const customCreateMyTodo = async (data) => {
     await createMyTodo(data).then((resp) => {
-      navigation(`/todos/${resp.data.todo.id}`)
+      if (resp.data) navigate(`/my/todos/${resp.data.todo.id}`)
     })
   }
 
